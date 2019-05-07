@@ -96,7 +96,15 @@ function install(Vue, options) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_highcharts__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_highcharts___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_highcharts__);
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 
 var HighchartsVueComponent = {
@@ -109,16 +117,20 @@ var HighchartsVueComponent = {
   props: {
     constructorType: {
       type: String,
-      default: 'chart'
+      "default": 'chart'
     },
     options: {
       type: Object,
       required: true
     },
+    globalOptions: {
+      type: Object,
+      required: false
+    },
     callback: Function,
     updateArgs: {
       type: Array,
-      default: function _default() {
+      "default": function _default() {
         return [true, true];
       }
     }
@@ -126,9 +138,9 @@ var HighchartsVueComponent = {
   watch: {
     options: {
       handler: function handler(newValue) {
-        var _chart;
+        var _this$chart;
 
-        (_chart = this.chart).update.apply(_chart, [newValue].concat(_toConsumableArray(this.updateArgs)));
+        (_this$chart = this.chart).update.apply(_this$chart, [Object.assign({}, newValue)].concat(_toConsumableArray(this.updateArgs)));
       },
       deep: true
     }
@@ -136,9 +148,13 @@ var HighchartsVueComponent = {
   mounted: function mounted() {
     // Check wheather the chart configuration object is passed, as well as the constructor is valid
     if (this.options && __WEBPACK_IMPORTED_MODULE_0_highcharts___default.a[this.constructorType]) {
-      this.chart = __WEBPACK_IMPORTED_MODULE_0_highcharts___default.a[this.constructorType](this.$refs.chart, this.options, this.callback ? this.callback : null);
+      if (_typeof(this.globalOptions) === 'object') {
+        __WEBPACK_IMPORTED_MODULE_0_highcharts___default.a.setOptions(this.globalOptions);
+      }
+
+      this.chart = __WEBPACK_IMPORTED_MODULE_0_highcharts___default.a[this.constructorType](this.$refs.chart, Object.assign({}, this.options), this.callback ? this.callback : null);
     } else {
-      !this.options ? console.warn('The "options" parameter was not passed.') : console.warn("'".concat(this.constructorType, "' constructor-type is incorrect. Sometimes this error is casued by the fact, that the corresponding module wasn't imported."));
+      !this.options ? console.warn('The "options" parameter was not passed.') : console.warn("'".concat(this.constructorType, "' constructor-type is incorrect. Sometimes this error is caused by the fact, that the corresponding module wasn't imported."));
     }
   },
   beforeDestroy: function beforeDestroy() {
