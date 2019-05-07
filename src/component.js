@@ -12,6 +12,10 @@ const HighchartsVueComponent = {
       type: Object,
       required: true
     },
+    globalOptions: {
+      type: Object,
+      required: false
+    },
     callback: Function,
     updateArgs: {
       type: Array,
@@ -29,6 +33,9 @@ const HighchartsVueComponent = {
   mounted () {
     // Check wheather the chart configuration object is passed, as well as the constructor is valid
     if (this.options && Highcharts[this.constructorType]) {
+      if(typeof this.globalOptions === 'object') {
+        Highcharts.setOptions(this.globalOptions);
+      }
       this.chart = Highcharts[this.constructorType](
         this.$refs.chart,
         Object.assign({}, this.options),
